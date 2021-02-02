@@ -1,2 +1,2 @@
 # My_project
-I have worked on some of the datasets found online. I will try to analyze the datasets or topics where I am interested. The projects include the projects from Data Science bootcamp.
+I have been working on some of the datasets found online. I also perform webscraping task to extract unstructured data and transform into clean datasets. I perform analysis on the datasets or topics where I am interested.
