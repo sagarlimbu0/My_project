@@ -1,4 +1,4 @@
-# WELCOME
+# WELCOME To my Repo: Projects on Data Sciece, MySQL Database, Data Engineer 
 # TWO SECTIONS:
-- MY Personal Projects
+- My Personal Projects
 - Tutorials and Exercises
