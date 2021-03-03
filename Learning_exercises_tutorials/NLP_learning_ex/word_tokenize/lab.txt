@@ -1,0 +1,146 @@
+This lab is designed to introduce you to Ansible Configuration Management. Sticking with the theme we
+will be using Ansible to configure a web server which will serve the affinity web service.
+Ansible is an IT automation tool. It can configure systems, deploy software and orchestrate more
+advanced IT tasks such as continuous deployments or zero downtime rolling updates. Ansible manages
+machines in an agent-less manner. It uses SSH to connect with target machines (hosts) and can use your
+existing OS credentials.
+Multiple ways to install:
+• $ pip install ansible
+• $ apt install ansible
+• $ yum install ansible
+• $ brew install ansible
+LAB LEARNING OBJECTIVES
+➔ Familiarize yourself with creating Ansible playbooks
+CANVAS SUBMISSION
+➔ Submit a copy of your Ansible playbook
+(NOTE: if you have any additional files to submit please zip them and upload a zip file. For
+example, if you use the copy module to copy files)
+STAGE 0 | Create an Ansible Playbook
+Using Lab 1 and Lab 2 as a guide create an Ansible Playbook that will configure a server to serve the
+Affinity Web Service.
+Keep in mind you will not have to integrate all steps from Lab 1 for example testing the Apache and Php
+installation. You have the freedom to design the Ansible playbook anyway you’d like there is no right or
+wrong way for submission. For example, some may choose to use the copy module to copy the
+apache2.conf file into /etc/apache2/apache2.conf or you may choose to use the line in file module to
+replace certain lines in a file.
+Ultimately, I should be able to run your playbook in a docker container and be able to see the affinity
+splash page.
+LAB 3 | Ansible Playbook
+CIT480 | Fall 2020
+LAB 3 | Ansible Playbook PAGE 2 | 5
+STAGE 1 | Run Ansible in Docker container
+It is not required to run Ansible in a Docker container. It is just one way to create and run the playbooks.
+Start a new container:
+$ docker run –it -p 8080:80 ubuntu:18.04 /bin/bash
+[lisa:~]$ docker run –it -p 8080:80 ubuntu:18.04 /bin/bash
+root@d7ba4802f432:/#
+Run apt update and install ansible:
+$ apt update && apt install -y ansible
+root@d00e102ab6af:/# ansible
+Usage: ansible <host-pattern> [options]
+Define and run a single task 'playbook' against a set of hosts
+Options:
+-a MODULE_ARGS, --args=MODULE_ARGS
+module arguments
+--ask-vault-pass ask for vault password
+-B SECONDS, --background=SECONDS
+run asynchronously, failing after X seconds
+(default=N/A)
+-C, --check don't make any changes; instead, try to predict some
+of the changes that may occur
+**** Some output has been cutoff ****
+Make a directory to work from:
+$ mkdir -p /home/ansible ; cd /home/ansible
+root@d00e102ab6af:/# mkdir -p /home/ansible ; cd /home/ansible
+root@d00e102ab6af:/home/ansible#
+Note: The directory does not need to be named ansible. This example also assumes you are working in a
+docker container.
+LAB 3 | Ansible Playbook
+CIT480 | Fall 2020
+LAB 3 | Ansible Playbook PAGE 3 | 5
+STAGE 2 | Ansible Playbook Installing a Package
+Here is an example ansible playbook that installs git:
+---
+- hosts: 127.0.0.1
+connection: localhost
+tasks:
+- name: Install curl
+apt: name=curl state=present
+To run the playbook use the ansible-playbook command:
+$ ansible-playbook <NAME OF FILE>
+root@d00e102ab6af:/# ansible-playbook ex1.yml
+PLAY [127.0.0.1]
+**************************************************************************************************
+****************
+TASK [Gathering Facts]
+**************************************************************************************************
+**********
+ok: [127.0.0.1]
+TASK [Install curl]
+**************************************************************************************************
+*************
+changed: [127.0.0.1]
+PLAY RECAP
+**************************************************************************************************
+**********************
+127.0.0.1 : ok=2 changed=1 unreachable=0 failed=0
+We can now verify that curl has been installed:
+$ curl
+root@d00e102ab6af:/home/ansible# curl
+curl: try 'curl --help' or 'curl --manual' for more information
+LAB 3 | Ansible Playbook
+CIT480 | Fall 2020
+LAB 3 | Ansible Playbook PAGE 4 | 5
+STAGE 3 | Ansible Playbook Installing Multiple Package’s
+You can install multiple packages using a list. In this example we are installing curl, git and apache2:
+---
+- hosts: 127.0.0.1
+connection: localhost
+tasks:
+- name: Install required packages
+apt:
+name:
+- curl
+- git
+- apache2
+state: present
+STAGE 4 | Ansible Playbook Using Copy Module
+For this example I created a file named cit480.txt and this playbook will copy the file into the
+/etc/apache2 directory
+---
+- hosts: 127.0.0.1
+connection: localhost
+tasks:
+- name: Install required packages
+apt:
+name:
+- curl
+- git
+- apache2
+state: present
+- name: Copy a file
+copy:
+src: /home/ansible/cit480.txt
+dest: /etc/apache2/cit480.txt
+owner: root
+group: root
+mode: 0644
+LAB 3 | Ansible Playbook
+CIT480 | Fall 2020
+LAB 3 | Ansible Playbook PAGE 5 | 5
+We can check that the file was copied:
+$ ls /etc/apache2
+root@d00e102ab6af:/home/ansible# ls /etc/apache2/
+apache2.conf conf-available envvars mods-available ports.conf sites-enabled
+cit480.txt conf-enabled magic mods-enabled sites-available
+STAGE 5 | Helpful Link
+Here is a link to the ansible module index. This is a list of all available modules:
+https://docs.ansible.com/ansible/2.8/modules/modules_by_category.html
+Here is a link to an introduction to configuration management:
+https://www.digitalocean.com/community/tutorials/an-introduction-to-configuration-management
+Here is a link to configuration management 101 writing ansible playbooks
+https://www.digitalocean.com/community/tutorials/configuration-management-101-writing-ansibleplaybooks
+Lastly, I will pre-record an additional video walking through some additional examples.
+STAGE 6 | Canvas Submission
+Submit a copy of your Ansible Playbook and any additional files needed for configuration. If submitting
+multiple files please zip all files.
