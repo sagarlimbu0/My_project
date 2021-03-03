@@ -1,0 +1,171 @@
+# Provider
+
+provider "aws" {
+  profile = "default"
+  region  = "us-west-1"
+}
+
+# Security group resource
+
+resource "aws_security_group" "sg_22_open" {
+  name        = "allow_ssh"
+  description = "sg with port 22 open"
+
+  ingress {
+
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+
+  }
+
+  egress {
+
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+
+  }
+
+  tags = {
+    Name = "Allow SSH"
+  }
+}
+
+# Attaching Secuiryt Group to Instance
+
+resource "aws_network_interface_sg_attachment" "sg_attachment" {
+
+  security_group_id    = aws_security_group.sg_22_open.id
+  network_interface_id = aws_instance.web_ec2.primary_network_interface_id
+}
+
+
+# AWS S3 Bucket
+resource "aws_s3_bucket" "bucketlab5limbu" {
+  bucket = "bucketlab5limbu"
+  acl    = "public-read"
+
+}
+
+
+# AWS IAM ROLE
+resource "aws_iam_role" "cit480_role" {
+
+  name               = "cit480_role"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+
+  tags = {
+    tag-key = "tag-value"
+  }
+}
+
+
+
+# EC2 Policy 
+
+resource "aws_iam_role_policy" "ec2_policy" {
+
+  name = "ec2_policy"
+  role = "${aws_iam_role.cit480_role.id}"
+
+  policy = <<EOF
+{
+ "Version": "2012-10-17",
+ "Statement": [
+   {	
+   "Action":[
+ "ec2:*"
+	],
+  "Effect": "Allow",
+  "Resource": "*"
+   }
+  ]
+}
+EOF
+}
+
+
+# S3 FULL ACCESS Policy
+
+resource "aws_iam_role_policy" "s3_full" {
+
+  name = "s3_full"
+  role = "${aws_iam_role.cit480_role.id}"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+  {
+    "Action": [
+		"s3:*"
+	      ],
+	    "Effect": "Allow",	
+            "Resource": "*"
+        }
+    ]
+}
+EOF
+
+}
+
+
+# Creating IAM instance Profile 
+
+resource "aws_iam_instance_profile" "cit480_profile" {
+  name = "cit480_profile"
+  role = "${aws_iam_role.cit480_role.name}"
+
+}
+
+# EC2 Resoure TAG
+
+resource "aws_instance" "web_ec2" {
+
+  ami = "ami-d1180894"
+
+  instance_type        = "t2.micro"
+  key_name             = "<key PAIR>"
+  iam_instance_profile = "${aws_iam_instance_profile.cit480_profile.name}"
+
+
+  tags = {
+    Name = "Hello-L.A."
+  }
+
+}
+
+# iam policy attachment for EC2 full Access
+
+resource "aws_iam_role_policy_attachment" "attach_ec2_policy" {
+
+  role       = "${aws_iam_role.cit480_role.name}"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+
+}
+
+# iam policy attachment for S3 full Access
+
+resource "aws_iam_role_policy_attachment" "attach_s3_policy" {
+
+  role       = "${aws_iam_role.cit480_role.name}"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+}
+
