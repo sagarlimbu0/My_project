@@ -1,6 +1,6 @@
-<!doctype html>
 
-<h>Building AWS Infrastructure using Terraform</h>
+# Building AWS Infrastructure using Terraform
+
 - Creating EC2 Instance
 - Creating Security Group with port 22
 - Create an S3 Bucket
@@ -9,4 +9,4 @@
 - Attach IAM Role to EC2 instance
 
 # NOTE: 
-- Requires User's key pair to pass on the EC2 Resource TAG to create EC2 Instance
+- Requires User's **key pair** to pass on the EC2 Resource TAG to create EC2 Instance
