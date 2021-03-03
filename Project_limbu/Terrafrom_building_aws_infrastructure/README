@@ -1,4 +1,6 @@
-#Building AWS Infrastructure using Terraform
+<!doctype html>
+
+<h>Building AWS Infrastructure using Terraform</h>
 - Creating EC2 Instance
 - Creating Security Group with port 22
 - Create an S3 Bucket
