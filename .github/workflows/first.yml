@@ -6,10 +6,10 @@ on:
       - main
       - limbu_first
         
- jobs:
-    first-action:
-      runs-on: ubuntu-latest
-      steps:
-      - name: echo
-        run: |
-          echo "Hello Earth"        
+jobs:
+   first-action:
+     runs-on: ubuntu-latest
+     steps:
+     - name: echo
+       run: |
+         echo "Hello Earth"        
