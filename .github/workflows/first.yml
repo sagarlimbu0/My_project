@@ -13,4 +13,6 @@ jobs:
      - uses: actions/checkout@v2        
      - name: echo
        run: |
-         ./make.sh        
+         ls -l
+         touch file.txt
+         ls -l        
