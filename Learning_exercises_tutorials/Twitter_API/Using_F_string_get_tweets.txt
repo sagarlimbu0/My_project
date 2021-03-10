@@ -1,0 +1,6 @@
+#CURSORS
+- to get n number of TWEETSm
+
+#FORMAT:
+- using 'f' string
+- EG: f"{tweet.user.name} said:{tweet.text}"
