@@ -13,7 +13,7 @@ jobs:
      - uses: actions/checkout@v2        
      - name: echo
        run: |
-         sudo ./make.sh
+         ./make.sh
          ls -l
          touch file.txt
          ls -l        
